@@ -1,0 +1,26 @@
+Package: miRACLe
+Type: Package
+Title: miRACLe: an R package for inference of individual-specific miRNA-mRNA interactions
+Version: 0.1.0
+Author: Pan Wang,
+        Qi Li,
+	Yi-Bo Gao,
+	Nan Sun,
+	Jun S.Liu,
+	Ke Deng,
+	Jie He
+Maintainer: Pan Wang <wangpan@cicams.ac.cn>
+        Qi Li <l-q17@mails.tsinghua.edu.cn>
+Description: This is an easy-to-use package for inferring miRNA-mRNA interactions with an emphasis on predicting miRNA targets in an individual sample. 
+             It integrates both sequence-based and expression-based information in target prediciton. The sequencing matching scores for all putative
+	     miRNA-mRNA pairs are collected from TargetScan V7.0 (i.e., cumulative weighted context++ scores) and provided beforehand. The users only
+	     need to provide the paired miRNA-mRNA expression profiles of the biological samples that they are interested in. Then it outputs the top
+	     interactions rank ordered by miRACLe score at both the individual and population levels (if more than one samples are included) as the 
+	     final prediction results.
+Depends: R(>= 3.5.0)
+License: GNU General Public License v3.0
+Encoding: UTF-8
+LazyData: true
+VignetteBuilder: knitr
+RoxygenNote: 6.1.1
+Packaged: 2019-04-11 09:35:10 UTC; 

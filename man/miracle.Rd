@@ -2,26 +2,48 @@
 % Please edit documentation in R/miracle.R
 \name{miracle}
 \alias{miracle}
-\title{miracle is the main function}
+\title{Title miRACLe predicts miRNA-mRNA interactions for individual samples as well
+ as sample population}
 \usage{
-miracle(seqScore, mirtarList, mirExpr, tarExpr, exprFilter = 1,
-  OutputSelect = TRUE, ID_pos = c())
+miracle(seqScore, sampleMatch, mirExpr, tarExpr, exprFilter = 1,
+  OutputSelect = TRUE, samSelect = c())
 }
 \arguments{
-\item{seqScore}{}
+\item{seqScore}{A Z x 3 data.frame that contains sequence-based interaction
+scores for putative miRNA-mRNA pairs. The first column must contain gene
+symbols for mRNAs, the second column must contain miRNA ids for miRNAs, the
+third column must contain sequence-based score for the miRNA-mRNA pair}
 
-\item{mirtarList}{}
+\item{sampleMatch}{A character K x 2 matrix of paired sample identifiers used
+in mirExpr and tarExpr. The first column must contain the sample identifiers
+ used in mirExpr and the second column must contain the sample identifiers
+ used in tarExpr. Sample identifiers in the same row should be paired.}
 
-\item{mirExpr}{}
+\item{mirExpr}{A numeric M x R matrix as the observed expression of M miRNAs
+in R samples. NOTE: colnames is required for mirExpr to map each sample to
+the sample identifiers in the first column of sampleMatch. rownames is
+required for mirExpr to map each miRNA to the miRNA id in the first column
+of sampleMatch.}
 
-\item{tarExpr}{}
+\item{tarExpr}{A numeric N x T matrix as the observed expression of N mRNAs
+in T samples. NOTE: colnames is required for tarExpr to map each sample to
+the sample identifiers in the second column of sampleMatch. rownames is
+required for tarExpr to map each mRNA to the gene symbol in the first column
+ of sampleMatch.}
 
-\item{exprFilter}{}
+\item{exprFilter}{a filter to remove the lowly expressed miRNAs and mRNAs.
+If provided, exprFiter=k, then both miRNAs and mRNAs that are expressed in
+less than (1-k)% of the samples in the provided datasets will be filtered
+out. Default is 1.}
 
-\item{OutputSelect}{}
+\item{OutputSelect}{Logical, select “TRUE” to return the top 10 percent
+ranked predictions by scores, and “FALSE” to return the whole prediction
+result. Default is TRUE.}
 
-\item{ID_pos}{}
+\item{samSelect}{Optional, a vector of samples that users select to get the
+integrated result over those samples, default is all samples in sampleMatch.}
 }
 \description{
-miracle is the main function
+Title miRACLe predicts miRNA-mRNA interactions for individual samples as well
+ as sample population
 }

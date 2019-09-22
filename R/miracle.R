@@ -1,5 +1,14 @@
-#' miRACLe predicts miRNA-mRNA interactions for individual samples as well
-#'  as sample population
+#' miRACLe predicts miRNA-mRNA interactions for individual samples as well as
+#' sample population
+#'
+#' Infer miRNA-mRNA interactions using paired miRNA-mRNA expression profile.
+#' miRACLe is based on a random contact model. It integrates genome-wide
+#' expression profiles and sequence-based interaction scores of miRNAs and mRNAs
+#' to calculate the relative probability of effective contacts. We consider
+#' that the more likely an effective contact takes place between two molecules,
+#' the more likely that a regulatory relationship between them exists.
+#' This function supports prediction of miRNA-mRNA interactions at both
+#' individual and population levels.
 #'
 #' @param seqScore  A Z x 3 data.frame that contains sequence-based interaction
 #' scores for putative miRNA-mRNA pairs. The first column must contain gene
@@ -19,6 +28,10 @@
 #' the sample identifiers in the second column of sampleMatch. rownames is
 #' required for tarExpr to map each mRNA to the gene symbol in the first column
 #'  of sampleMatch.
+#' @param samSelect Optional, a vector of samples that users select to get the
+#' integrated result over those samples. The elements in this vector should be
+#' matched to the sample identifiers in mirExpr. Default is NULL, which means
+#' that all samples in sampleMatch will be analyzed.
 #' @param exprFilter a filter to remove the lowly expressed miRNAs and mRNAs.
 #' If provided, exprFiter=k, then both miRNAs and mRNAs that are expressed in
 #' less than (1-k)% of the samples in the provided datasets will be filtered
@@ -26,14 +39,56 @@
 #' @param OutputSelect Logical, select “TRUE” to return the top 10 percent
 #' ranked predictions by scores, and “FALSE” to return the whole prediction
 #' result. Default is TRUE.
-#' @param samSelect Optional, a vector of samples that users select to get the
-#' integrated result over those samples, default is all samples in sampleMatch.
 #'
-#' @return
+#' @section Detail:
+#' miRACLe predicts miRNA-mRNA interactions for individual samples as well as
+#' sample population. For individual-level prediction, miRACLe inputs a single
+#' paired miRNA-mRNA expression profile and sequence-based scores for putative
+#' miRNA-mRNA pairs and output a list of miRNA-mRNA interactions ranked by
+#' miRACLe scores. When a sample population is of interest, the individualized
+#' miRACLe scores will be averaged over all samples in the population to
+#' determine a population-level miRACLe score, based on which we output the
+#' ranking list of miRNA-mRNA interactions.
+#'
+#' In order to run the current version of miRACLe, the users should provide two
+#' data files that describe the expression levels of each miRNA and mRNA. And
+#' one additional file that defines the correspondence of samples between the
+#' miRNA and mRNA data files. All files are tab-delimited ASCII text files. As
+#' for expression data, both microarray profiling and RNA sequencing data are
+#' accepted. To achieve optimal prediction on the sequencing data, log2
+#' transformed normalized read counts (e.g. RSEM) are recommended as the input
+#' for the program. In order for this function to execute correctly, this
+#' expression matrix should be transformed into a non-negative numeric matrix.
+#'
+#' miRACLe provides sequence-based interaction scores for putative miRNA-mRNA
+#' pairs. These scores are originally obtained from TargetScan v7.2
+#' (TargetScan_CWCS_cons and TargetScan_CWCS), DIANA-microT-CDS (DIANA_microT_CDS),
+#' MirTarget v4 (MirTarget4), miRanda-mirSVR (miRanda_mirSVR) and compiled by the
+#' developers to fit the model. Default is TargetScan_CWCS_cons. The other scores
+#' can be downloaded \href{https://figshare.com/s/0b7c68cd5152da27a191}{here}.
+#' User can also provide their own seqScore, as long as the format meets the
+#' requirements.
+#'
+#' @return An object list containing the following items:
+#'
+#' Ind: inferred individual-level prediction result, a 4*N-column
+#'
+#' matrixPop: inferred population-level prediction result, a 4-column matrix
+#'
 #' @export
-#'
+#' @section Note:
+#' Sample identifiers in sampleMatch should be a subset of those in mirExpr and tarExpr.
 #' @examples
-miracle = function(seqScore, sampleMatch, mirExpr, tarExpr, exprFilter = 1, OutputSelect = TRUE, samSelect = c()){
+#' data(seqScore.Rdata) 	# load the default sequence-based interaction score
+#' data(Test_data.Rdata) 	# load test datasets
+#' mirExpr <- Test_DLBC_miRNA	# miRNA expression
+#' tarExpr <- Test_DLBC_mRNA	# mRNA expression
+#' sampleMatch <- Test_DLBC_sampleMatch	# sample matching file
+#' sampleSelect = c("TCGA-FA-A4BB-01A-11R-A31S-13", "TCGA-FA-A4XK-01A-11R-A31S-13", "TCGA-FA-A6HN-01A-11R-A31S-13") # samples selected from the test dataset to analyze
+#' final_output <- miracle(seqScore, sampleMatch, mirExpr, tarExpr, samSelect = NULL, exprFilter = 0.8, OutputSelect = FALSE)
+#' final_output$Ind 	# Individual-level result
+#' final_output$Pop 	# Population-level result
+miracle = function(seqScore, sampleMatch, mirExpr, tarExpr,samSelect = NULL, exprFilter = 1, OutputSelect = TRUE){
   input_list = matrix_transfer(seqScore)
   x = name_func(sampleMatch, mirExpr, tarExpr)
   z1 = mirna_matrix(mirExpr, x[[1]], input_list[[1]])
@@ -51,8 +106,16 @@ miracle = function(seqScore, sampleMatch, mirExpr, tarExpr, exprFilter = 1, Outp
   return(z9)
 }
 
-#' miRACLe predicts miRNA-mRNA interactions for individual samples as well
-#'  as sample population
+#' miRACLe predicts miRNA-mRNA interactions for individual samples
+#'
+#' Infer miRNA-mRNA interactions using a single paired miRNA-mRNA expression profile.
+#' miRACLe is based on a random contact model. It integrates genome-wide expression
+#' profile and sequence-based interaction scores of miRNAs and mRNAs to calculate
+#' the relative probability of effective contacts. We consider that the more likely
+#' an effective contact takes place between two molecules, the more likely that a
+#' regulatory relationship between them exists. This function is specifically
+#' designed to predict individualized miRNA-mRNA interactions using a single
+#' paired miRNA-mRNA expression profile.
 #'
 #' @param seqScore A Z x 3 data.frame that contains sequence-based interaction
 #' scores for putative miRNA-mRNA pairs. The first column must contain gene
@@ -68,10 +131,45 @@ miracle = function(seqScore, sampleMatch, mirExpr, tarExpr, exprFilter = 1, Outp
 #' ranked predictions by scores, and “FALSE” to return the whole prediction
 #' result. Default is TRUE
 #'
-#' @return
+#' @return An object list containing the following items:
+#'
+#' Ind: inferred prediction result, a 4-column matrix
+#' @section Detail:
+#' miRACLe predicts miRNA-mRNA interactions for individual samples as well as
+#' sample population. For individual-level prediction, miRACLe inputs a single
+#' paired miRNA-mRNA expression profile and sequence-based scores for putative
+#' miRNA-mRNA pairs and output a list of miRNA-mRNA interactions ranked by
+#' miRACLe scores. When a sample population is of interest, the individualized
+#' miRACLe scores will be averaged over all samples in the population to
+#' determine a population-level miRACLe score, based on which we output the
+#' ranking list of miRNA-mRNA interactions.
+#'
+#' In order to run the current version of miRACLe, the users should provide two
+#' data files that describe the expression levels of each miRNA and mRNA. And
+#' one additional file that defines the correspondence of samples between the
+#' miRNA and mRNA data files. All files are tab-delimited ASCII text files. As
+#' for expression data, both microarray profiling and RNA sequencing data are
+#' accepted. To achieve optimal prediction on the sequencing data, log2
+#' transformed normalized read counts (e.g. RSEM) are recommended as the input
+#' for the program. In order for this function to execute correctly, this
+#' expression matrix should be transformed into a non-negative numeric matrix.
+#'
+#' miRACLe provides sequence-based interaction scores for putative miRNA-mRNA
+#' pairs. These scores are originally obtained from TargetScan v7.2
+#' (TargetScan_CWCS_cons and TargetScan_CWCS), DIANA-microT-CDS (DIANA_microT_CDS),
+#' MirTarget v4 (MirTarget4), miRanda-mirSVR (miRanda_mirSVR) and compiled by the
+#' developers to fit the model. Default is TargetScan_CWCS_cons. The other scores
+#' can be downloaded \href{https://figshare.com/s/0b7c68cd5152da27a191}{here}.
+#' User can also provide their own seqScore, as long as the format meets the
+#' requirements.
 #' @export
 #'
 #' @examples
+#' data(seqScore.Rdata) 	# load the default sequence-based interaction score
+#' data(Test_data.Rdata) 	# load test datasets
+#' mirExpr_ind <- Test_HeLa_miRNA	# miRNA expression
+#' tarExpr_ind <- Test_HeLa_mRNA	# mRNA expression
+#' final_output_ind <- miracle_ind(seqScore, mirExpr_ind, tarExpr_ind, OutputSelect = TRUE)
 miracle_ind = function(seqScore, mirExpr, tarExpr, OutputSelect = TRUE){
   input_list = matrix_transfer(seqScore)
   z1 = mirna_matrix_ind(mirExpr, input_list[[1]])

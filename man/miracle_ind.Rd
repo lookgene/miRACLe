@@ -71,9 +71,9 @@ requirements.
 }
 
 \examples{
-data(seqScore.Rdata) 	# load the default sequence-based interaction score
-data(Test_data.Rdata) 	# load test datasets
-mirExpr_ind <- Test_HeLa_miRNA	# miRNA expression
-tarExpr_ind <- Test_HeLa_mRNA	# mRNA expression
+data(seqScore)   # load the default sequence-based interaction score
+data(Test_data)  # load test datasets
+mirExpr_ind <- Test_Hela_miRNA # miRNA expression
+tarExpr_ind <- Test_Hela_mRNA  # mRNA expression
 final_output_ind <- miracle_ind(seqScore, mirExpr_ind, tarExpr_ind, OutputSelect = TRUE)
 }

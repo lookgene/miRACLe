@@ -85,7 +85,7 @@
 #' tarExpr <- Test_DLBC_mRNA  # mRNA expression
 #' sampleMatch <- Test_DLBC_sampleMatch # sample matching file
 #' sampleSelect = c("TCGA-FA-A4BB-01A-11R-A31S-13", "TCGA-FA-A4XK-01A-11R-A31S-13", "TCGA-FA-A6HN-01A-11R-A31S-13") # samples selected from the test dataset to analyze
-#' final_output <- miracle(seqScore, sampleMatch, mirExpr, tarExpr, samSelect = NULL, exprFilter = 0.8, OutputSelect = FALSE)
+#' final_output <- miracle(seqScore, sampleMatch, mirExpr, tarExpr, samSelect = sampleSelect, exprFilter = 0.8, OutputSelect = FALSE)
 #' final_output$Ind   # Individual-level result
 #' final_output$Pop   # Population-level result
 miracle = function(seqScore, sampleMatch, mirExpr, tarExpr,samSelect = NULL, exprFilter = 1, OutputSelect = TRUE){

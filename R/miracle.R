@@ -79,15 +79,15 @@
 #' @section Note:
 #' Sample identifiers in sampleMatch should be a subset of those in mirExpr and tarExpr.
 #' @examples
-#' data(seqScore.Rdata) 	# load the default sequence-based interaction score
-#' data(Test_data.Rdata) 	# load test datasets
-#' mirExpr <- Test_DLBC_miRNA	# miRNA expression
-#' tarExpr <- Test_DLBC_mRNA	# mRNA expression
-#' sampleMatch <- Test_DLBC_sampleMatch	# sample matching file
+#' data(seqScore)   # load the default sequence-based interaction score
+#' data(Test_data)  # load test datasets
+#' mirExpr <- Test_DLBC_miRNA # miRNA expression
+#' tarExpr <- Test_DLBC_mRNA  # mRNA expression
+#' sampleMatch <- Test_DLBC_sampleMatch # sample matching file
 #' sampleSelect = c("TCGA-FA-A4BB-01A-11R-A31S-13", "TCGA-FA-A4XK-01A-11R-A31S-13", "TCGA-FA-A6HN-01A-11R-A31S-13") # samples selected from the test dataset to analyze
 #' final_output <- miracle(seqScore, sampleMatch, mirExpr, tarExpr, samSelect = NULL, exprFilter = 0.8, OutputSelect = FALSE)
-#' final_output$Ind 	# Individual-level result
-#' final_output$Pop 	# Population-level result
+#' final_output$Ind   # Individual-level result
+#' final_output$Pop   # Population-level result
 miracle = function(seqScore, sampleMatch, mirExpr, tarExpr,samSelect = NULL, exprFilter = 1, OutputSelect = TRUE){
   input_list = matrix_transfer(seqScore)
   x = name_func(sampleMatch, mirExpr, tarExpr)
@@ -165,10 +165,10 @@ miracle = function(seqScore, sampleMatch, mirExpr, tarExpr,samSelect = NULL, exp
 #' @export
 #'
 #' @examples
-#' data(seqScore.Rdata) 	# load the default sequence-based interaction score
-#' data(Test_data.Rdata) 	# load test datasets
-#' mirExpr_ind <- Test_HeLa_miRNA	# miRNA expression
-#' tarExpr_ind <- Test_HeLa_mRNA	# mRNA expression
+#' data(seqScore)   # load the default sequence-based interaction score
+#' data(Test_data)  # load test datasets
+#' mirExpr_ind <- Test_Hela_miRNA # miRNA expression
+#' tarExpr_ind <- Test_Hela_mRNA  # mRNA expression
 #' final_output_ind <- miracle_ind(seqScore, mirExpr_ind, tarExpr_ind, OutputSelect = TRUE)
 miracle_ind = function(seqScore, mirExpr, tarExpr, OutputSelect = TRUE){
   input_list = matrix_transfer(seqScore)

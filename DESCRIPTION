@@ -1,7 +1,7 @@
 Package: miRACLe
 Type: Package
 Title: miRACLe: an R package for inference of individual-specific miRNA-mRNA interactions
-Version: 6.1.0
+Version: 1.0.0
 Author: Pan Wang,
         Qi Li,
 	Yi-Bo Gao,
